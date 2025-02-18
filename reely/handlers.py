@@ -61,7 +61,7 @@ async def handle_instagram_reel(message: Message):
     for file in download_dir.iterdir():
         if file.suffix == ".mp4":
             reel = FSInputFile(str(file), filename=file.name)
-            await message.answer_video(video=reel, caption="Here is your video")
+            await message.answer_video(video=reel, caption="📥 Downloaded via @ReelyFastBot")
             file.unlink()
         elif file.suffix == ".txt":
             file.unlink()
