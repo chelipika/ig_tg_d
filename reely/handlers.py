@@ -1,5 +1,4 @@
-import asyncio
-import os
+from random import randint
 from pathlib import Path
 from aiogram import F, Bot, Router
 from aiogram.filters import CommandStart, Command, CommandObject
@@ -7,7 +6,7 @@ from aiogram.types import Message, PreCheckoutQuery, CallbackQuery, FSInputFile,
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
-from reely.classes import InstagramDownloader
+from reely.classes import InstagramDownloader, fact_list
 import reely.keyboards as kb
 from config import USERNAME, PASSWORD, CHANNEL_ID, CHANNEL_LINK, TOKEN
 
@@ -55,13 +54,13 @@ async def subchek(callback: CallbackQuery, message: Message):
 async def handle_instagram_reel(message: Message):
     if not await subscription_check(message.from_user.id, message):
         return
-    await message.reply("✅ Instagram post detected! Processing...")
-    file_path = downloader.download_single_post(url=message.text, id=message.from_user.id)
+    x = await message.answer(f"✅ Instagram post detected! Did you know: {fact_list[randint(0, len(fact_list)-1)]}")
+    downloader.download_single_post(url=message.text, id=message.from_user.id)
     
     for file in download_dir.iterdir():
         if file.suffix == ".mp4":
             reel = FSInputFile(str(file), filename=file.name)
-            await message.answer_video(video=reel, caption="📥 Downloaded via @ReelyFastBot")
+            await message.answer_video(video=reel, caption="📥 Downloaded via @ReelyFastBot", reply_markup=kb.add_to_group)
             file.unlink()
         elif file.suffix == ".txt":
             file.unlink()
@@ -69,6 +68,7 @@ async def handle_instagram_reel(message: Message):
             img = FSInputFile(str(file), filename=file.name)
             await message.answer_photo(img, caption="here is your image")
             file.unlink()
+    await x.delete()
 
 @router.message()
 async def catch_all(message: Message):
