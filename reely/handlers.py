@@ -7,8 +7,26 @@ from aiogram.exceptions import TelegramBadRequest
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
 from reely.classes import InstagramDownloader, fact_list
+import database.requests as rq
 import reely.keyboards as kb
 from config import USERNAME, PASSWORD, CHANNEL_ID, CHANNEL_LINK, TOKEN
+
+greeting_message = '''
+Need to save an Instagram post? Just send the link, and I'll get it for you in seconds!
+
+📌 What can I download?
+✔️ Reels
+✔️ Videos
+✔️ Photos
+✔️ Carousels
+
+🚀 How to use:
+1️⃣ Copy the Instagram post link 📋
+2️⃣ Paste it here and send it 📩
+3️⃣ Get your media instantly! 🎉
+
+Let’s go—send me a link! 🎬🔥'''
+
 
 bot = Bot(token=TOKEN)
 router = Router()
@@ -39,9 +57,15 @@ async def handle_join_request(update: ChatJoinRequest):
 
 @router.message(CommandStart())
 async def start(message: Message):
+    await rq.set_user(tg_id=message.from_user.id)
     if not await subscription_check(message.from_user.id, message):
         return
-    await message.answer("Hello the bot is working")
+    await message.answer(f"⚡ Welcome to {(await message.bot.get_me()).username}! ⚡" + greeting_message, reply_markup=kb.add_to_group)
+
+@router.message(Command("narrator")) #// /narrator 123456, all users will recieve 123456
+async def narrator(message: Message, command: CommandObject):
+    for user in await rq.get_all_user_ids():
+        await bot.send_message(chat_id=user, text=command.args)
 
 @router.callback_query(F.data == "subchek")
 async def subchek(callback: CallbackQuery, message: Message):
