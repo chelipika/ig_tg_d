@@ -194,7 +194,7 @@ async def handle_instagram_reel(message: Message):
     if download_path.is_dir():
         try:
             shutil.rmtree(download_dir)
-            await message.answer(f"Directory {download_dir} and all its contents have been removed.")
+            # await message.answer(f"Directory {download_dir} and all its contents have been removed.")
         except Exception as e:
             await message.answer(f"Error occurred while removing directory: {e}")
     else:
