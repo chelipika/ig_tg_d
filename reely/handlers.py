@@ -14,7 +14,7 @@ import instaloader
 import re
 import uuid
 from datetime import datetime
-from config import USERNAME, PASSWORD, CHANNEL_ID, CHANNEL_LINK, TOKEN
+from config import CHANNEL_ID, CHANNEL_LINK, TOKEN
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
