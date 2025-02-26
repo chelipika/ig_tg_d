@@ -1,28 +1,17 @@
 # 🚀 ReelyFastBot
 
-![ReelyFastBot Banner](https://raw.githubusercontent.com/username/reelyfastbot/main/assets/banner.png)
 
 <p align="center">
-  <a href="#features">Features</a> •
-  <a href="#demo">Demo</a> •
-  <a href="#installation">Installation</a> •
-  <a href="#usage">Usage</a> •
-  <a href="#configuration">Configuration</a> •
-  <a href="#contributing">Contributing</a> •
-  <a href="#license">License</a>
-</p>
-
-<p align="center">
-  <img src="https://img.shields.io/github/license/username/reelyfastbot" alt="License">
-  <img src="https://img.shields.io/github/stars/username/reelyfastbot" alt="Stars">
-  <img src="https://img.shields.io/github/forks/username/reelyfastbot" alt="Forks">
-  <img src="https://img.shields.io/github/issues/username/reelyfastbot" alt="Issues">
+  <img src="https://img.shields.io/github/license/chelipika/ig_tg_d" alt="License">
+  <img src="https://img.shields.io/github/stars/chelipika/ig_tg_d" alt="Stars">
+  <img src="https://img.shields.io/github/forks/chelipika/ig_tg_d" alt="Forks">
+  <img src="https://img.shields.io/github/issues/chelipika/ig_tg_d" alt="Issues">
 </p>
 
 **ReelyFastBot** is a powerful Telegram bot that allows users to easily download content from Instagram, including Reels, Videos, Photos, and Carousels.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/username/reelyfastbot/main/assets/demo.gif" alt="Demo GIF" width="600">
+  <img src="https://raw.githubusercontent.com/chelipika/ig_tg_d/main/assets/demo.gif" alt="Demo GIF" width="600">
 </p>
 
 ## ✨ Features
@@ -40,7 +29,7 @@
 Add [@ReelyFastBot](https://t.me/ReelyFastBot) on Telegram and start downloading your favorite Instagram content instantly!
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/username/reelyfastbot/main/assets/usage-example.png" alt="Usage Example" width="300">
+  <img src="https://raw.githubusercontent.com/chelipika/ig_tg_d/main/assets/usage-example.png" alt="Usage Example" width="300">
 </p>
 
 ## 🔧 Installation
@@ -56,8 +45,8 @@ Add [@ReelyFastBot](https://t.me/ReelyFastBot) on Telegram and start downloading
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/username/reelyfastbot.git
-   cd reelyfastbot
+   git clone https://github.com/chelipika/ig_tg_d.git
+   cd ig_tg_d
    ```
 
 2. Install dependencies:
@@ -90,7 +79,7 @@ CHANNEL_LINK = "https://t.me/your_channel"  # Public link to your channel
 ## 📚 Project Structure
 
 ```
-reelyfastbot/
+ig_tg_d/
 ├── config.py                 # Configuration variables
 ├── main.py                   # Bot initialization and startup
 ├── database/
@@ -140,5 +129,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 <p align="center">
-  Made with ❤️ by <a href="https://github.com/username">YourUsername</a>
+  Made with ❤️ by <a href="https://github.com/chelipika">chelipika</a>
 </p>
