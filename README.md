@@ -29,7 +29,10 @@
 Add [@ReelyFastBot](https://t.me/ReelyFastBot) on Telegram and start downloading your favorite Instagram content instantly!
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/chelipika/ig_tg_d/main/assets/usage-example.png" alt="Usage Example" width="300">
+  <img src="https://github.com/chelipika/ig_tg_d/blob/master/assets/carousel.jpg" alt="Usage Example" width="300">
+</p>
+<p align="center">
+  <img src="https://github.com/chelipika/ig_tg_d/blob/master/assets/demo.gif" alt="Usage Example gif" width="300">
 </p>
 
 ## 🔧 Installation
