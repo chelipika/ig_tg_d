@@ -27,7 +27,7 @@
 ## 🎮 Demo
 
 Add [@ReelyFastBot](https://t.me/ReelyFastBot) on Telegram and start downloading your favorite Instagram content instantly!
-<a src="#demo">Demo</a>
+<a href="#demo">Demo</a>
 
 ## 🔧 Installation
 
