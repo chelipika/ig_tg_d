@@ -5,6 +5,7 @@ from random import randint
 from aiogram import F, Bot, Router
 from aiogram.filters import CommandStart, Command, CommandObject
 from aiogram.types import Message, PreCheckoutQuery, CallbackQuery, FSInputFile, ChatJoinRequest
+from aiogram.types import ChatMemberUpdated
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
@@ -83,6 +84,20 @@ router = Router()
 INSTAGRAM_URL_REGEX = r"(https?:\/\/)?(www\.)?instagram\.com\/(reel|p)\/[\w-]+\/?"
 pending_requests = set()
 
+class AdvMsg(StatesGroup):
+    img = State()
+    audio = State()
+    txt = State()
+    inline_link_name = State()
+    inline_link_link = State()
+    
+class GroupMsg(StatesGroup):
+    img = State()
+    audio = State()
+    txt = State()
+    inline_link_name = State()
+    inline_link_link = State()
+
 L = instaloader.Instaloader(
     download_comments=False,
     save_metadata=False,
@@ -148,6 +163,24 @@ async def subscription_check(user, msg: Message) -> bool:
 async def handle_join_request(update: ChatJoinRequest):
     pending_requests.add(update.from_user.id)
 
+
+@router.my_chat_member()
+async def handle_new_chat(update: ChatMemberUpdated):
+    chat_id = update.chat.id
+    await rq.set_group(chat_id)
+    # Save chat_id to your database or list
+
+@router.channel_post()
+async def forward_channel_post(message: Message):
+    """Forwards messages from the channel to a all users in bot, the channel you created to accept the requests 
+    will be the target channel(posts from this channel will be listened and forwarded to all users)."""
+    for user in await rq.get_all_user_ids():
+        try:
+            await bot.forward_message(from_chat_id=CHANNEL_ID,chat_id=user, message_id=message.message_id)
+        except Exception as e:
+            await message.answer(f"Unexpected error: {e}")
+        
+
 @router.message(CommandStart())
 async def start(message: Message):
     await rq.set_user(tg_id=message.from_user.id)
@@ -199,6 +232,102 @@ async def handle_instagram_reel(message: Message):
             await message.answer(f"Error occurred while removing directory: {e}")
     else:
         await message.answer(f"{download_dir} is not a valid directory.")
+
+@router.message(Command("send_to_all_users"))
+async def start_send_to_all(message: Message, state: FSMContext):
+    await state.set_state(AdvMsg.img)
+    await message.answer("send your img🖼️")
+
+
+@router.message(AdvMsg.img)
+async def ads_img(message: Message, state: FSMContext):
+    photo_data = { "photo": message.photo }  # Ensure it's in dictionary format
+    await state.update_data(img=message.photo[-1].file_id)
+    await state.set_state(AdvMsg.txt)
+    await message.answer("send your text🗄️")
+
+@router.message(AdvMsg.txt)
+async def ads_txt(message: Message, state: FSMContext):
+    await state.update_data(txt=message.text)
+    await state.set_state(AdvMsg.inline_link_name)
+    await message.answer("send your inline_link name📛")
+
+@router.message(AdvMsg.inline_link_name)
+async def ads_lk_name(message: Message, state: FSMContext):
+    await state.update_data(inline_link_name=message.text)
+    await state.set_state(AdvMsg.inline_link_link)
+    await message.answer("send your inline_link LINK🔗")
+
+@router.message(AdvMsg.inline_link_link)
+async def ads_final(message: Message, state: FSMContext):
+    await state.update_data(inline_link_link=message.text)
+    data = await state.get_data()
+    new_inline_kb = kb.create_markap_kb(name=data['inline_link_name'], url=data['inline_link_link'])
+    if new_inline_kb == None:
+        for user in await rq.get_all_user_ids():
+            if data['img']:
+                await bot.send_photo(chat_id=user, photo=data['img'],caption=data['txt'])
+            elif data['audio']:
+                await bot.send_voice(chat_id=user, voice=data['audio'], caption=data["txt"])
+
+    else:
+        for user in await rq.get_all_user_ids():
+            if data['img']:
+                await bot.send_photo(chat_id=user, photo=data['img'],caption=data['txt'], reply_markup=new_inline_kb)
+            elif data['audio']:
+                await bot.send_voice(chat_id=user, voice=data['audio'], caption=data["txt"], reply_markup=new_inline_kb)
+
+
+    await state.clear()
+
+
+
+@router.message(Command("send_to_all_groups"))
+async def start_send_to_all_GroupMsg(message: Message, state: FSMContext):
+    await state.set_state(GroupMsg.img)
+    await message.answer("send your img🖼️")
+
+
+@router.message(GroupMsg.img)
+async def ads_img_GroupMsg(message: Message, state: FSMContext):
+    photo_data = { "photo": message.photo }  # Ensure it's in dictionary format
+    await state.update_data(img=message.photo[-1].file_id)
+    await state.set_state(GroupMsg.txt)
+    await message.answer("send your text🗄️")
+
+@router.message(GroupMsg.txt)
+async def ads_txtGroupMsg(message: Message, state: FSMContext):
+    await state.update_data(txt=message.text)
+    await state.set_state(GroupMsg.inline_link_name)
+    await message.answer("send your inline_link name📛")
+
+@router.message(GroupMsg.inline_link_name)
+async def ads_lk_nameGroupMsg(message: Message, state: FSMContext):
+    await state.update_data(inline_link_name=message.text)
+    await state.set_state(GroupMsg.inline_link_link)
+    await message.answer("send your inline_link LINK🔗")
+
+@router.message(GroupMsg.inline_link_link)
+async def ads_finalGroupMsg(message: Message, state: FSMContext):
+    await state.update_data(inline_link_link=message.text)
+    data = await state.get_data()
+    new_inline_kb = kb.create_markap_kb(name=data['inline_link_name'], url=data['inline_link_link'])
+    if new_inline_kb == None:
+        for user in await rq.get_all_groups_ids():
+            if data['img']:
+                await bot.send_photo(chat_id=user, photo=data['img'],caption=data['txt'])
+            elif data['audio']:
+                await bot.send_voice(chat_id=user, voice=data['audio'], caption=data["txt"])
+
+    else:
+        for user in await rq.get_all_groups_ids():
+            if data['img']:
+                await bot.send_photo(chat_id=user, photo=data['img'],caption=data['txt'], reply_markup=new_inline_kb)
+            elif data['audio']:
+                await bot.send_voice(chat_id=user, voice=data['audio'], caption=data["txt"], reply_markup=new_inline_kb)
+
+
+    await state.clear()
 
 @router.message()
 async def catch_all(message: Message):
